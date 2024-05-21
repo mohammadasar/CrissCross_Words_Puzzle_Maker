@@ -19,8 +19,8 @@ const routes = [
     component: () => import('src/pages/HomePage.vue')
   },
 {
-    path:'/asar',
-    component: () => import('src/pages/Asar.vue')
+    path:'/tamil',
+    component: () => import('src/pages/TamilWords.vue')
    },
    {
     path:'/new',

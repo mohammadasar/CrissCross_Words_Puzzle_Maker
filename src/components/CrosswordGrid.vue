@@ -50,6 +50,7 @@ export default {
 }
 
 .crossword-grid-cell:not(.active) {
-  background-color: rgb(21, 20, 20);
+  background-color: rgb(5, 5, 5);
+  border: 1px solid white;
 }
 </style>

@@ -1,24 +1,23 @@
 <template>
-  <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h3>{{ title }}</h3>
-
-    <!-- Crossword Grid Component -->
-    <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
-
-    <!-- Word Input Section -->
-    <div class="word-input">
-      <label for="words">Enter Words (separated by commas):</label>
-      <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
-
-      <!-- Buttons for Generating and Showing Answers -->
-      <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
-        <q-btn class="glossy" rounded color="purple-12" @click="updateWordsGrid" label="Generate Words"/>
-        <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
-      </div><br><br>
+    <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <h3>{{ title }}</h3>
+  
+      <!-- Crossword Grid Component -->
+      <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
+  
+      <!-- Word Input Section -->
+      <div class="word-input">
+        <label for="words">Enter Words (separated by commas):</label>
+        <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
+  
+        <!-- Buttons for Generating and Showing Answers -->
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
+          <q-btn class="glossy" rounded color="purple-12" @click="updateWordsGrid" label="Generate Words"/>
+          <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
+        </div><br><br>
+      </div>
     </div>
-  </div>
-</template>
-
+  </template>
 <script>
 import TamilCrossgrid from "../components/CrosswordGrid.vue";
 import GraphemeSplitter from 'grapheme-splitter';
@@ -49,10 +48,10 @@ export default {
       this.grid = updatedGrid;
     },
     validateWordInput() {
-      const alphabetPattern = /^[a-zA-Z\s,]*$/; // Regular expression to allow only alphabet characters
-      if (!alphabetPattern.test(this.wordInput)) {
-        alert("Please enter only alphabet words.");
-        this.wordInput = this.wordInput.replace(/[^a-zA-Z,]/g, ""); // Replace non-alphabet characters
+      const tamilPattern = /^[\u0B80-\u0BFF\s,]*$/;
+      if (!tamilPattern.test(this.wordInput)) {
+        alert("Please enter only Tamil words.");
+        this.wordInput = this.wordInput.replace(/[^ \u0B80-\u0BFF,]/g, "");
       }
     },
     updateWordsGrid() {
@@ -173,7 +172,6 @@ export default {
   },
 };
 </script>
-
 <style>
 .word-input {
   margin-top: 20px;
@@ -192,4 +190,4 @@ export default {
   vertical-align: middle;
   line-height: 1.5; /* Adjust line height for better vertical alignment */
 }
-</style>
+</style>  
