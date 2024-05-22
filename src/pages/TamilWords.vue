@@ -1,23 +1,24 @@
 <template>
-    <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-      <h3>{{ title }}</h3>
-  
-      <!-- Crossword Grid Component -->
-      <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
-  
-      <!-- Word Input Section -->
-      <div class="word-input">
-        <label for="words">Enter Words (separated by commas):</label>
-        <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
-  
-        <!-- Buttons for Generating and Showing Answers -->
-        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
-          <q-btn class="glossy" rounded color="purple-12" @click="updateWordsGrid" label="Generate Words"/>
-          <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
-        </div><br><br>
-      </div>
+  <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h3>{{ title }}</h3>
+
+    <!-- Crossword Grid Component -->
+    <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
+
+    <!-- Word Input Section -->
+    <div class="word-input">
+      <label for="words">Enter Words (separated by commas):</label>
+      <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
+
+      <!-- Buttons for Generating and Showing Answers -->
+      <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
+        <q-btn class="glossy" rounded color="purple-12" @click="updateWordsGrid" label="Generate Words"/>
+        <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
+      </div><br><br>
     </div>
-  </template>
+  </div>
+</template>
+
 <script>
 import TamilCrossgrid from "../components/CrosswordGrid.vue";
 import GraphemeSplitter from 'grapheme-splitter';
@@ -34,6 +35,7 @@ export default {
       wordInput: "",
       originalGrid: [],
       splitter: new GraphemeSplitter(),
+      wordCounter: 1, // Initialize word counter
     };
   },
   created() {
@@ -43,15 +45,16 @@ export default {
     generateCrossword() {
       this.grid = [];
       this.originalGrid = [];
+      this.wordCounter = 1; // Reset word counter when generating a new crossword
     },
     updateGrid(updatedGrid) {
       this.grid = updatedGrid;
     },
     validateWordInput() {
-      const tamilPattern = /^[\u0B80-\u0BFF\s,]*$/;
+      const tamilPattern = /^[\u0B80-\u0BFF\s,]*$/; // Regular expression to allow only Tamil characters
       if (!tamilPattern.test(this.wordInput)) {
         alert("Please enter only Tamil words.");
-        this.wordInput = this.wordInput.replace(/[^ \u0B80-\u0BFF,]/g, "");
+        this.wordInput = this.wordInput.replace(/[^\u0B80-\u0BFF,]/g, ""); // Replace non-Tamil characters
       }
     },
     updateWordsGrid() {
@@ -89,21 +92,28 @@ export default {
       };
 
       const placeWord = (word, row, col, direction) => {
-        const graphemes = this.splitter.splitGraphemes(word);
-  
-        for (let i = 0; i < graphemes.length; i++) {
-          let r = direction === "across" ? row : row + i;
-          let c = direction === "across" ? col + i : col;
-  
-          grid[r][c].text = graphemes[i];
-          grid[r][c].word = word;
-          grid[r][c].active = true;
-  
-          if (i === 0) {
-            grid[r][c].number = graphemes.length;
-          }
-        }
-      };
+  const graphemes = this.splitter.splitGraphemes(word);
+
+  // Find the current index of the word in the list of words
+  const wordIndex = words.indexOf(word);
+
+  for (let i = 0; i < graphemes.length; i++) {
+    let r = direction === "across" ? row : row + i;
+    let c = direction === "across" ? col + i : col;
+
+    grid[r][c].text = graphemes[i];
+    grid[r][c].word = word;
+    grid[r][c].active = true;
+
+    if (i === 0) {
+      // Assign unique number based on the order of appearance of the word
+      grid[r][c].number = wordIndex + 1; // Add 1 to make it non-zero indexed
+    }
+  }
+};
+
+
+
 
       const findIntersections = (word) => {
         const graphemes = this.splitter.splitGraphemes(word);
@@ -172,6 +182,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .word-input {
   margin-top: 20px;
@@ -190,4 +201,19 @@ export default {
   vertical-align: middle;
   line-height: 1.5; /* Adjust line height for better vertical alignment */
 }
-</style>  
+
+/* Define background color for inactive cells */
+#app .crossword-grid-cell:not(.active) {
+  background-color: black;
+  border: 1px solid white;
+  color: white; /* Change text color for better visibility */
+}
+
+.crossword-grid-cell .cell-number {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 10px;
+  font-weight: bold;
+}
+</style>

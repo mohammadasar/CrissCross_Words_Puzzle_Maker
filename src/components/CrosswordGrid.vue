@@ -1,15 +1,14 @@
 <template>
   <div class="crossword-grid">
-    <div
-      v-for="(row, rowIndex) in grid"
-      :key="rowIndex"
-      class="crossword-grid-row"
-    >
+    <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-grid-row">
       <div
-        v-for="(cell, colIndex) in row"
-        :key="colIndex"
-        :class="['crossword-grid-cell', { 'active': cell.active }]">
-        {{ cell.text }}
+        v-for="(cell, cellIndex) in row"
+        :key="cellIndex"
+        class="crossword-grid-cell"
+        :class="{ active: cell.active }"
+      >
+        <span v-if="cell.number" class="cell-number">{{ cell.number }}</span>
+        <span class="text">{{ cell.text.toUpperCase() }}</span>
       </div>
     </div>
   </div>
@@ -17,12 +16,13 @@
 
 <script>
 export default {
+  name: "TamilCrossgrid",
   props: {
     grid: {
       type: Array,
       required: true
     }
-  }
+  },
 };
 </script>
 
@@ -30,6 +30,7 @@ export default {
 .crossword-grid {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .crossword-grid-row {
@@ -37,20 +38,29 @@ export default {
 }
 
 .crossword-grid-cell {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border: 1px solid #000;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .crossword-grid-cell.active {
   background-color: white;
 }
 
-.crossword-grid-cell:not(.active) {
-  background-color: rgb(5, 5, 5);
-  border: 1px solid white;
+.cell-number {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 10px;
+  font-weight: bold;
+}
+.text{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
