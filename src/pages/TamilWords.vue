@@ -1,4 +1,5 @@
 <template>
+  <Navbar></Navbar>
   <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <h3>{{ title }}</h3>
 
@@ -12,7 +13,7 @@
 
       <!-- Buttons for Generating and Showing Answers -->
       <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
-        <q-btn class="glossy" rounded color="purple-12" @click="updateWordsGrid" label="Generate Words"/>
+        <q-btn class="glossy" rounded color="indigo-9" @click="updateWordsGrid" label="Generate Words"/>
         <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
       </div><br><br>
     </div>
@@ -22,15 +23,17 @@
 <script>
 import TamilCrossgrid from "../components/CrosswordGrid.vue";
 import GraphemeSplitter from 'grapheme-splitter';
+import Navbar from '../components/Navbar.vue';
 
 export default {
   name: "App",
   components: {
     TamilCrossgrid,
+    Navbar
   },
   data() {
     return {
-      title: "Daily Crossword",
+      title: "Daily Crossword Tamil",
       grid: [],
       wordInput: "",
       originalGrid: [],

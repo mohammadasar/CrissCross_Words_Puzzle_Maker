@@ -56,7 +56,7 @@ Abstract,Banquet,Cascade,Dolphin,Exquisite,Fjord,Gazebo,Harpoon,Icicle,Jubilee,K
      வரவேற்கிறோம்,மாலைவணக்கம்,தங்கைமன்னிக்கவும்,கன்னம்,முழங்கால்,முகம்,சிங்கம்
 
 
-      generateCrosswordGrid(words, gridSize) {
+      <!-- generateCrosswordGrid(words, gridSize) {
       const grid = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ({ text: "", word: "", active: false, number: 0 })));
       
       const canPlaceWord = (word, row, col, direction) => {
@@ -152,4 +152,4 @@ Abstract,Banquet,Cascade,Dolphin,Exquisite,Fjord,Gazebo,Harpoon,Icicle,Jubilee,K
       words.forEach(placeWordWithIntersections);
 
       return grid;
-    },
+    }, -->

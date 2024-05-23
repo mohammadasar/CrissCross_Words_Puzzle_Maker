@@ -58,5 +58,6 @@ export default {
 }
 .cell-content {
   font-size: 20px;
+  font-weight: bolder;
 }
 </style>

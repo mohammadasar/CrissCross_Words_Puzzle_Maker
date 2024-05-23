@@ -8,7 +8,7 @@
         :class="{ active: cell.active }"
       >
         <span v-if="cell.number" class="cell-number">{{ cell.number }}</span>
-        <span class="text">{{ cell.text.toUpperCase() }}</span>
+        <span class="cell-content">{{ cell.text.toUpperCase() }}</span>
       </div>
     </div>
   </div>
@@ -62,5 +62,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.cell-content {
+  font-size: 20px;
+  font-weight: bolder;
 }
 </style>
