@@ -1,15 +1,15 @@
 <template>
   <Navbar></Navbar>
   <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h3>{{ title }}</h3>
+    <h3 style="font-size: 50px;font-weight: bolder;">{{ title }}</h3>
 
     <!-- Crossword Grid Component -->
     <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
 
     <!-- Word Input Section -->
     <div class="word-input">
-      <label for="words">Enter Words (separated by commas):</label>
-      <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
+      <label for="words" style="font-size: 25px;font-weight: 700;" >Enter Words (separated by commas):</label><br>
+      <textarea id="words" v-model="wordInput" @input="validateWordInput" placeholder="Ex :  மரம் , அன்னம்"  class="q-pa-md" style="width: 500px;height: 250px;border-radius: 10px;"></textarea><br><br>
 
       <!-- Buttons for Generating and Showing Answers -->
       <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
@@ -73,109 +73,109 @@ export default {
       return Math.max(longestWordLength, Math.ceil(Math.sqrt(wordCount * longestWordLength))) + 2; // Adding some buffer
     },
     generateCrosswordGrid(words, gridSize) {
-      const grid = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ({ text: "", word: "", active: false, number: 0 })));
-      
-      const canPlaceWord = (word, row, col, direction) => {
-        const graphemes = this.splitter.splitGraphemes(word);
-        if ((direction === "across" && col + graphemes.length > gridSize) ||
-            (direction === "down" && row + graphemes.length > gridSize)) {
-          return false;
-        }
+  const grid = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ({ text: "", word: "", active: false, number: 0 })));
   
-        for (let i = 0; i < graphemes.length; i++) {
-          let r = direction === "across" ? row : row + i;
-          let c = direction === "across" ? col + i : col;
-  
-          if (grid[r][c].text !== "" && grid[r][c].text !== graphemes[i]) {
-            return false;
-          }
-        }
-  
-        return true;
-      };
-
-      const placeWord = (word, row, col, direction) => {
-  const graphemes = this.splitter.splitGraphemes(word);
-
-  // Find the current index of the word in the list of words
-  const wordIndex = words.indexOf(word);
-
-  for (let i = 0; i < graphemes.length; i++) {
-    let r = direction === "across" ? row : row + i;
-    let c = direction === "across" ? col + i : col;
-
-    grid[r][c].text = graphemes[i];
-    grid[r][c].word = word;
-    grid[r][c].active = true;
-
-    if (i === 0) {
-      // Assign unique number based on the order of appearance of the word
-      grid[r][c].number = wordIndex + 1; // Add 1 to make it non-zero indexed
+  const canPlaceWord = (word, row, col, direction) => {
+    const graphemes = this.splitter.splitGraphemes(word);
+    if ((direction === "across" && col + graphemes.length > gridSize) ||
+        (direction === "down" && row + graphemes.length > gridSize)) {
+      return false;
     }
-  }
-};
 
+    for (let i = 0; i < graphemes.length; i++) {
+      let r = direction === "across" ? row : row + i;
+      let c = direction === "across" ? col + i : col;
 
+      if (grid[r][c].text !== "" && grid[r][c].text !== graphemes[i]) {
+        return false;
+      }
+    }
 
+    return true;
+  };
 
-      const findIntersections = (word) => {
-        const graphemes = this.splitter.splitGraphemes(word);
-        const intersections = [];
-  
-        for (let r = 0; r < gridSize; r++) {
-          for (let c = 0; c < gridSize; c++) {
-            if (grid[r][c].text !== "" && graphemes.includes(grid[r][c].text)) {
-              intersections.push({ row: r, col: c, letter: grid[r][c].text });
-            }
+  const placeWord = (word, row, col, direction) => {
+    const graphemes = this.splitter.splitGraphemes(word);
+    const wordIndex = words.indexOf(word);
+
+    for (let i = 0; i < graphemes.length; i++) {
+      let r = direction === "across" ? row : row + i;
+      let c = direction === "across" ? col + i : col;
+
+      grid[r][c].text = graphemes[i];
+      grid[r][c].word = word;
+      grid[r][c].active = true;
+
+      if (i === 0) {
+        grid[r][c].number = wordIndex + 1;
+      }
+    }
+  };
+
+  const findIntersections = (word) => {
+    const graphemes = this.splitter.splitGraphemes(word);
+    const intersections = [];
+
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        if (grid[r][c].text !== "" && graphemes.includes(grid[r][c].text)) {
+          intersections.push({ row: r, col: c, letter: grid[r][c].text });
+        }
+      }
+    }
+    return intersections;
+  };
+
+  const placeWordWithIntersections = (word) => {
+    let placed = false;
+    const intersections = findIntersections(word);
+
+    // Attempt to place word with maximum intersections first
+    for (let { row, col, letter } of intersections) {
+      const letterIndex = this.splitter.splitGraphemes(word).indexOf(letter);
+      const directions = ["across", "down"];
+
+      for (const direction of directions) {
+        let startRow = row - (direction === "across" ? 0 : letterIndex);
+        let startCol = col - (direction === "across" ? letterIndex : 0);
+
+        if (startRow >= 0 && startCol >= 0 && startRow < gridSize && startCol < gridSize) {
+          if (canPlaceWord(word, startRow, startCol, direction)) {
+            placeWord(word, startRow, startCol, direction);
+            placed = true;
+            break;
           }
         }
-        return intersections;
-      };
+      }
+      if (placed) break;
+    }
 
-      const placeWordWithIntersections = (word) => {
-        let placed = false;
-        const intersections = findIntersections(word);
+    // If no suitable intersection is found, place randomly
+    if (!placed) {
+      let attempts = 0;
+      while (attempts < 100) {
+        const row = Math.floor(Math.random() * gridSize);
+        const col = Math.floor(Math.random() * gridSize);
+        const direction = Math.random() < 0.5 ? "across" : "down";
 
-        for (let { row, col, letter } of intersections) {
-          const letterIndex = this.splitter.splitGraphemes(word).indexOf(letter);
-          const directions = ["across", "down"];
-
-          for (const direction of directions) {
-            let startRow = row - (direction === "across" ? 0 : letterIndex);
-            let startCol = col - (direction === "across" ? letterIndex : 0);
-
-            if (startRow >= 0 && startCol >= 0 && startRow < gridSize && startCol < gridSize) {
-              if (canPlaceWord(word, startRow, startCol, direction)) {
-                placeWord(word, startRow, startCol, direction);
-                placed = true;
-                break;
-              }
-            }
-          }
-          if (placed) break;
+        if (canPlaceWord(word, row, col, direction)) {
+          placeWord(word, row, col, direction);
+          placed = true;
+          break;
         }
+        attempts++;
+      }
+    }
+  };
 
-        if (!placed) {
-          let attempts = 0;
-          while (attempts < 100) {
-            const row = Math.floor(Math.random() * gridSize);
-            const col = Math.floor(Math.random() * gridSize);
-            const direction = Math.random() < 0.5 ? "across" : "down";
+  // Sort words by potential intersection points (most intersections first)
+  words.sort((a, b) => findIntersections(b).length - findIntersections(a).length);
 
-            if (canPlaceWord(word, row, col, direction)) {
-              placeWord(word, row, col, direction);
-              placed = true;
-              break;
-            }
-            attempts++;
-          }
-        }
-      };
+  words.forEach(placeWordWithIntersections);
 
-      words.forEach(placeWordWithIntersections);
+  return grid;
+},
 
-      return grid;
-    },
     hideAnswers() {
       this.grid = this.grid.map(row => row.map(cell => ({ ...cell, text: cell.active ? "" : cell.text })));
     },

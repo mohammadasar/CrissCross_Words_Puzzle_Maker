@@ -1,15 +1,15 @@
 <template>
   <Navbar></Navbar>
   <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h3>{{ title }}</h3>
+    <h3  style="font-size: 50px;font-weight: bolder;" >{{ title }}</h3>
 
     <!-- Crossword Grid Component -->
     <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
 
     <!-- Word Input Section -->
     <div class="word-input">
-      <label for="words">Enter Words (separated by commas):</label>
-      <textarea id="words" v-model="wordInput" @input="validateWordInput"></textarea><br><br>
+      <label for="words" style="font-size: 25px;font-weight: 700;">Enter Words (separated by commas):</label><br>  
+      <textarea id="words" v-model="wordInput" @input="validateWordInput" placeholder="Ex : Apple , Pen" class="q-pa-md" style="width: 500px;height: 250px;border-radius: 10px;"></textarea><br><br>
 
       <!-- Buttons for Generating and Showing Answers -->
       <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">

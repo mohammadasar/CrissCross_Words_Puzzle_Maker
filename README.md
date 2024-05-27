@@ -53,7 +53,7 @@ Abstract,Banquet,Cascade,Dolphin,Exquisite,Fjord,Gazebo,Harpoon,Icicle,Jubilee,K
      பாடல் 
 
 
-     வரவேற்கிறோம்,மாலைவணக்கம்,தங்கைமன்னிக்கவும்,கன்னம்,முழங்கால்,முகம்,சிங்கம்
+     வரவேற்கிறோம்,மாலைவணக்கம்,மன்னிக்கவும்,கன்னம்,முழங்கால்,முகம்,சிங்கம்
 
 
       <!-- generateCrosswordGrid(words, gridSize) {
