@@ -1,15 +1,20 @@
 <template>
+  <div>
   <Navbar></Navbar>
-  <div id="app" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h3  style="font-size: 50px;font-weight: bolder;" >{{ title }}</h3>
-
+  <h3 class="text-center"  style="font-size: 50px;font-weight: bolder;" >{{ title }}</h3><br>
+  <div id="app" class="row" style="margin-bottom: 100px;" >
+    <div class=" col-8 order:2 " style="order: 2;">
     <!-- Crossword Grid Component -->
     <TamilCrossgrid :grid="grid" @update-grid="updateGrid" />
-
+   </div>
     <!-- Word Input Section -->
-    <div class="word-input">
+    <div class="word-input col-4 q-pl-md" style="order: 1;">
+      <div>
+        <img src="/public/solvingthecrossword.png">
+      </div>
+      
       <label for="words" style="font-size: 25px;font-weight: 700;">Enter Words (separated by commas):</label><br>  
-      <textarea id="words" v-model="wordInput" @input="validateWordInput" placeholder="Ex : Apple , Pen" class="q-pa-md" style="width: 500px;height: 250px;border-radius: 10px;"></textarea><br><br>
+      <textarea id="words" v-model="wordInput" @input="validateWordInput" placeholder="Ex : Apple , Pen" class="q-pa-md" style="width: 400px;height: 230px;border-radius: 10px;"></textarea><br><br>
 
       <!-- Buttons for Generating and Showing Answers -->
       <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px;">
@@ -17,6 +22,7 @@
         <q-btn class="glossy" rounded color="green-9" @click="showAnswers" label="Show Answers"/>
       </div><br><br>
     </div>
+  </div>
   </div>
 </template>
 
@@ -216,5 +222,6 @@ export default {
   font-size: 10px;
   font-weight: bold;
 }
+
 </style>
 
